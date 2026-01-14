@@ -53,10 +53,24 @@ document.getElementById("submitBtn").addEventListener("click", async () => {
     });
 
     const data = await res.json();
-    if (!data.ok) throw new Error(data.message || "Submission failed");
 
-    msg.innerHTML =
-      `<div class="alert ok">Submitted successfully! Reference: ${data.ref}</div>`;
+    if (!data.ok) {
+      if (data.duplicate) {
+        msg.innerHTML = `<div class="alert">
+          Duplicate detected (within 12 hours). Existing Ticket: <b>${data.ticket}</b><br/>
+          Status: <b>${data.status}</b>
+          ${data.officeNumber ? `<br/>Office Number: <b>${data.officeNumber}</b>` : ""}
+        </div>`;
+        return;
+      }
+      throw new Error(data.message || "Submission failed");
+    }
+
+    localStorage.setItem("ch_lastTicket", data.ticket);
+
+    msg.innerHTML = `<div class="alert ok">
+      Submitted successfully! Ticket: <b>${data.ticket}</b> (Status: <b>${data.status}</b>)
+    </div>`;
 
     document.getElementById("roomNumber").value = "";
     document.getElementById("issue").value = "";
