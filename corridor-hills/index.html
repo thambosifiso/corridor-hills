@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Corridor Hills | Student Login</title>
+  <link rel="stylesheet" href="./assets/css/styles.css" />
+</head>
+<body>
+  <div class="wrap">
+    <header class="nav">
+      <div class="brand">
+        <div class="logo">CH</div>
+        <div>
+          <div class="title">Corridor Hills</div>
+          <div class="subtitle">Student Issue Reporting System</div>
+        </div>
+      </div>
+      <a class="btn ghost" href="./admin.html">Admin</a>
+    </header>
+
+    <main class="card">
+      <h1>Student Login</h1>
+      <p class="muted">Log in using your Student Number, Names, and Surname.</p>
+
+      <div class="grid">
+        <div>
+          <label>Student Number</label>
+          <input id="studentNumber" placeholder="e.g. 21903456" />
+        </div>
+        <div>
+          <label>Names</label>
+          <input id="firstName" placeholder="e.g. Sifiso Emanuel" />
+        </div>
+        <div>
+          <label>Surname</label>
+          <input id="lastName" placeholder="e.g. Nkosi" />
+        </div>
+      </div>
+
+      <button class="btn primary" id="loginBtn">Log In</button>
+      <div id="msg"></div>
+
+      <div class="note">
+        After login, you will fill the issue form (room number, issue, cellphone).
+      </div>
+    </main>
+
+    <footer class="footer muted">© Corridor Hills</footer>
+  </div>
+
+  <script src="./assets/js/login.js"></script>
+</body>
+</html>

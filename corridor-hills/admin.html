@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Corridor Hills | Admin</title>
+  <link rel="stylesheet" href="./assets/css/styles.css" />
+</head>
+<body>
+  <div class="wrap">
+    <header class="nav">
+      <div class="brand">
+        <div class="logo">CH</div>
+        <div>
+          <div class="title">Corridor Hills</div>
+          <div class="subtitle">Admin Dashboard</div>
+        </div>
+      </div>
+      <a class="btn ghost" href="./index.html">Student Login</a>
+    </header>
+
+    <main class="card">
+      <h1>Admin</h1>
+      <p class="muted">Enter admin password to load submissions and open the spreadsheet.</p>
+
+      <div class="grid">
+        <div>
+          <label>Admin Password</label>
+          <input id="adminPassword" type="password" placeholder="Enter password" />
+        </div>
+      </div>
+
+      <div class="row">
+        <button class="btn primary" id="loadBtn">Load Submissions</button>
+        <button class="btn" id="openSheetBtn">Open Spreadsheet (Excel)</button>
+      </div>
+
+      <div id="msg"></div>
+
+      <div class="tableWrap">
+        <table id="table" style="display:none;">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Student #</th>
+              <th>Names</th>
+              <th>Surname</th>
+              <th>Room</th>
+              <th>Issue</th>
+              <th>Cellphone</th>
+            </tr>
+          </thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+
+      <div class="note">
+        To download Excel: open the sheet → <b>File → Download → Microsoft Excel (.xlsx)</b>
+      </div>
+    </main>
+
+    <footer class="footer muted">© Corridor Hills</footer>
+  </div>
+
+  <script src="./assets/js/admin.js"></script>
+</body>
+</html>
