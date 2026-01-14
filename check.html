@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Corridor Hills | Check Status</title>
+  <link rel="stylesheet" href="./assets/css/styles.css" />
+</head>
+<body>
+  <div class="wrap">
+    <header class="nav">
+      <div class="brand">
+        <div class="logo">CH</div>
+        <div>
+          <div class="title">Corridor Hills</div>
+          <div class="subtitle">Check Issue Status</div>
+        </div>
+      </div>
+      <a class="btn ghost" href="./index.html">Back</a>
+    </header>
+
+    <main class="card">
+      <h1>Check Status</h1>
+      <p class="muted">Enter your Ticket and Student Number to see the latest status.</p>
+
+      <div class="grid">
+        <div>
+          <label>Ticket (e.g. CH-20260114-0001)</label>
+          <input id="ticket" placeholder="CH-YYYYMMDD-XXXX" />
+        </div>
+        <div>
+          <label>Student Number</label>
+          <input id="studentNumber" placeholder="e.g. 230031266" />
+        </div>
+      </div>
+
+      <button class="btn primary" id="checkBtn">Check</button>
+      <div id="msg"></div>
+
+      <div class="note">
+        If status is <b>visit_office</b>, you must visit the office 8am–4pm and present the office number.
+      </div>
+    </main>
+
+    <footer class="footer muted">© Corridor Hills</footer>
+  </div>
+
+  <script src="./assets/js/check.js"></script>
+</body>
+</html>
