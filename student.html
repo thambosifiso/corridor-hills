@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Corridor Hills | Report Issue</title>
+  <link rel="stylesheet" href="./assets/css/styles.css" />
+</head>
+<body>
+  <div class="wrap">
+    <header class="nav">
+      <div class="brand">
+        <div class="logo">CH</div>
+        <div>
+          <div class="title">Corridor Hills</div>
+          <div class="subtitle">Report an Issue</div>
+        </div>
+      </div>
+      <button class="btn ghost" id="logoutBtn">Logout</button>
+    </header>
+
+    <main class="card">
+      <h1>Issue Reporting Form</h1>
+      <p class="muted" id="welcome"></p>
+
+      <div class="pill" id="studentBadge"></div>
+
+      <div class="grid">
+        <div>
+          <label>Names</label>
+          <input id="firstName" />
+        </div>
+        <div>
+          <label>Surname</label>
+          <input id="lastName" />
+        </div>
+        <div>
+          <label>Room Number</label>
+          <input id="roomNumber" placeholder="e.g. B-204" />
+        </div>
+        <div>
+          <label>Cellphone Number</label>
+          <input id="cellphone" placeholder="e.g. 0712345678" />
+        </div>
+      </div>
+
+      <div style="margin-top:14px;">
+        <label>Issue Encountered</label>
+        <textarea id="issue" placeholder="Describe the issue clearly..."></textarea>
+      </div>
+
+      <button class="btn primary" id="submitBtn">Submit Issue</button>
+      <div id="msg"></div>
+
+      <div class="note">
+        Your submission is stored in the admin spreadsheet for action.
+      </div>
+    </main>
+
+    <footer class="footer muted">© Corridor Hills</footer>
+  </div>
+
+  <script src="./assets/js/student.js"></script>
+</body>
+</html>
