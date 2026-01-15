@@ -66,11 +66,13 @@ document.getElementById("submitBtn").addEventListener("click", async () => {
       throw new Error(data.message || "Submission failed");
     }
 
-    localStorage.setItem("ch_lastTicket", data.ticket);
+    localStorage.setItem("ch_lastTicket", data.ticket || "");
 
-    msg.innerHTML = `<div class="alert ok">
-      Submitted successfully! Ticket: <b>${data.ticket}</b> (Status: <b>${data.status}</b>)
-    </div>`;
+msg.innerHTML = `<div class="alert ok">
+  Submitted successfully!
+  Ticket: <b>${data.ticket}</b> (Status: <b>${data.status}</b>)
+</div>`;
+
 
     document.getElementById("roomNumber").value = "";
     document.getElementById("issue").value = "";
