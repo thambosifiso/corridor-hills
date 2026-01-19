@@ -54,6 +54,7 @@ document.getElementById("submitBtn").addEventListener("click", async () => {
 
     const data = await res.json();
 
+    // Duplicate block
     if (!data.ok) {
       if (data.duplicate) {
         msg.innerHTML = `<div class="alert">
@@ -61,22 +62,32 @@ document.getElementById("submitBtn").addEventListener("click", async () => {
           Status: <b>${data.status}</b>
           ${data.officeNumber ? `<br/>Office Number: <b>${data.officeNumber}</b>` : ""}
         </div>`;
+        // If you WANT to allow PDF proof even for duplicates, tell me and I'll enable redirect to receipt.html here.
         return;
       }
       throw new Error(data.message || "Submission failed");
     }
 
+    // Save last ticket for check page
     localStorage.setItem("ch_lastTicket", data.ticket || "");
 
-msg.innerHTML = `<div class="alert ok">
-  Submitted successfully!
-  Ticket: <b>${data.ticket}</b> (Status: <b>${data.status}</b>)
-</div>`;
+    // ✅ Save receipt data for receipt.html (Print / Save as PDF)
+    const receipt = {
+      date: new Date().toLocaleString(),
+      ticket: data.ticket,
+      status: data.status,
+      studentNumber,
+      firstName,
+      lastName,
+      roomNumber,
+      cellphone,
+      issue
+    };
 
+    localStorage.setItem("ch_receipt", JSON.stringify(receipt));
 
-    document.getElementById("roomNumber").value = "";
-    document.getElementById("issue").value = "";
-    document.getElementById("cellphone").value = "";
+    // ✅ Redirect to receipt page for printing / saving PDF
+    window.location.href = "./receipt.html";
   } catch (e) {
     msg.innerHTML = `<div class="alert">${e.message}</div>`;
   }
