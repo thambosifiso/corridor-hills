@@ -17,7 +17,7 @@ document.getElementById("firstName").value = firstNameLS;
 document.getElementById("lastName").value = lastNameLS;
 
 const msg = document.getElementById("msg");
-const pdfBtn = document.getElementById("pdfBtn");
+const pdfBtn = document.getElementById("pdfBtn"); // may be null if not added in HTML
 let lastReceipt = null;
 
 document.getElementById("logoutBtn").addEventListener("click", () => {
@@ -27,7 +27,9 @@ document.getElementById("logoutBtn").addEventListener("click", () => {
 
 document.getElementById("submitBtn").addEventListener("click", async () => {
   msg.innerHTML = "";
-  pdfBtn.style.display = "none";
+
+  // ✅ safe even if pdfBtn is missing
+  if (pdfBtn) pdfBtn.style.display = "none";
   lastReceipt = null;
 
   const firstName = document.getElementById("firstName").value.trim();
@@ -42,6 +44,9 @@ document.getElementById("submitBtn").addEventListener("click", async () => {
   }
 
   try {
+    // show progress so user knows it’s working
+    msg.innerHTML = `<div class="alert">Submitting...</div>`;
+
     const res = await fetch(API_URL, {
       method: "POST",
       headers: { "Content-Type": "text/plain;charset=utf-8" },
@@ -56,7 +61,14 @@ document.getElementById("submitBtn").addEventListener("click", async () => {
       })
     });
 
-    const data = await res.json();
+    // If Apps Script returns HTML error page, JSON parse will fail → we show it
+    const text = await res.text();
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch (err) {
+      throw new Error("Server did not return JSON. Check Apps Script deploy / permissions.");
+    }
 
     if (!data.ok) {
       if (data.duplicate) {
@@ -77,7 +89,6 @@ document.getElementById("submitBtn").addEventListener("click", async () => {
       Ticket: <b>${data.ticket}</b> (Status: <b>${data.status}</b>)
     </div>`;
 
-    // Build receipt for PDF
     lastReceipt = {
       date: new Date().toLocaleString(),
       ticket: data.ticket,
@@ -91,25 +102,30 @@ document.getElementById("submitBtn").addEventListener("click", async () => {
       officeHours: "8am to 4pm"
     };
 
-    // Show PDF button
-    pdfBtn.style.display = "inline-flex";
-    pdfBtn.onclick = () => downloadReceiptPDF(lastReceipt);
+    // ✅ only enable PDF if the button exists in HTML
+    if (pdfBtn) {
+      pdfBtn.style.display = "inline-flex";
+      pdfBtn.onclick = () => downloadReceiptPDF(lastReceipt);
 
-    // ✅ Auto-download PDF immediately (optional)
-    downloadReceiptPDF(lastReceipt);
+      // Auto-download PDF (optional)
+      downloadReceiptPDF(lastReceipt);
+    } else {
+      msg.innerHTML += `<div class="alert">PDF button not found. Add <b>id="pdfBtn"</b> in student.html.</div>`;
+    }
 
     // Clear fields
     document.getElementById("roomNumber").value = "";
     document.getElementById("issue").value = "";
     document.getElementById("cellphone").value = "";
   } catch (e) {
-    msg.innerHTML = `<div class="alert">${e.message}</div>`;
+    msg.innerHTML = `<div class="alert">Error: ${e.message}</div>`;
+    console.error(e);
   }
 });
 
 function downloadReceiptPDF(r) {
   if (!window.jspdf || !window.jspdf.jsPDF) {
-    alert("PDF library not loaded. Check your student.html script include.");
+    alert("PDF library not loaded. In student.html add jsPDF script BEFORE student.js.");
     return;
   }
 
