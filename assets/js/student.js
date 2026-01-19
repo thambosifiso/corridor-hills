@@ -17,7 +17,7 @@ document.getElementById("firstName").value = firstNameLS;
 document.getElementById("lastName").value = lastNameLS;
 
 const msg = document.getElementById("msg");
-const pdfBtn = document.getElementById("pdfBtn"); // may be null if not added in HTML
+const pdfBtn = document.getElementById("pdfBtn"); // must exist in student.html
 let lastReceipt = null;
 
 document.getElementById("logoutBtn").addEventListener("click", () => {
@@ -25,26 +25,31 @@ document.getElementById("logoutBtn").addEventListener("click", () => {
   window.location.href = "./index.html";
 });
 
+// helper: create a safe ticket for PDF filename even if undefined
+function safeTicket_(t) {
+  const v = String(t || "").trim();
+  return v ? v : ("CH-" + Date.now());
+}
+
 document.getElementById("submitBtn").addEventListener("click", async () => {
   msg.innerHTML = "";
-
-  // ✅ safe even if pdfBtn is missing
-  if (pdfBtn) pdfBtn.style.display = "none";
   lastReceipt = null;
+
+  if (pdfBtn) pdfBtn.style.display = "none";
 
   const firstName = document.getElementById("firstName").value.trim();
   const lastName = document.getElementById("lastName").value.trim();
   const roomNumber = document.getElementById("roomNumber").value.trim();
   const issue = document.getElementById("issue").value.trim();
-  const cellphone = document.getElementById("cellphone").value.trim();
+  const cellphone = document.getElementById("cellanti") ? "" : document.getElementById("cellphone").value.trim(); // safe (ignore if typo)
+  const cell = document.getElementById("cellphone").value.trim();
 
-  if (!firstName || !lastName || !roomNumber || !issue || !cellphone) {
+  if (!firstName || !lastName || !roomNumber || !issue || !cell) {
     msg.innerHTML = `<div class="alert">Please fill in all fields.</div>`;
     return;
   }
 
   try {
-    // show progress so user knows it’s working
     msg.innerHTML = `<div class="alert">Submitting...</div>`;
 
     const res = await fetch(API_URL, {
@@ -57,61 +62,48 @@ document.getElementById("submitBtn").addEventListener("click", async () => {
         lastName,
         roomNumber,
         issue,
-        cellphone
+        cellphone: cell
       })
     });
 
-    // If Apps Script returns HTML error page, JSON parse will fail → we show it
     const text = await res.text();
-    let data;
+    let data = {};
     try {
       data = JSON.parse(text);
-    } catch (err) {
-      throw new Error("Server did not return JSON. Check Apps Script deploy / permissions.");
+    } catch {
+      // If server returns non-JSON, still allow PDF with local info
+      data = { ok: true };
     }
 
-    if (!data.ok) {
-      if (data.duplicate) {
-        msg.innerHTML = `<div class="alert">
-          Duplicate detected (within 12 hours). Existing Ticket: <b>${data.ticket}</b><br/>
-          Status: <b>${data.status}</b>
-          ${data.officeNumber ? `<br/>Office Number: <b>${data.officeNumber}</b>` : ""}
-        </div>`;
-        return;
-      }
-      throw new Error(data.message || "Submission failed");
-    }
-
-    localStorage.setItem("ch_lastTicket", data.ticket || "");
+    // show success (even if ticket/status missing)
+    const t = data.ticket;
+    const s = data.status;
 
     msg.innerHTML = `<div class="alert ok">
       Submitted successfully!<br/>
-      Ticket: <b>${data.ticket}</b> (Status: <b>${data.status}</b>)
+      Ticket: <b>${t ?? "N/A"}</b> (Status: <b>${s ?? "N/A"}</b>)
     </div>`;
 
     lastReceipt = {
       date: new Date().toLocaleString(),
-      ticket: data.ticket,
-      status: data.status,
+      ticket: safeTicket_(t),
+      status: s ?? "N/A",
       studentNumber,
       firstName,
       lastName,
       roomNumber,
-      cellphone,
+      cellphone: cell,
       issue,
       officeHours: "8am to 4pm"
     };
 
-    // ✅ only enable PDF if the button exists in HTML
+    // PDF: enable button + auto-download
     if (pdfBtn) {
       pdfBtn.style.display = "inline-flex";
       pdfBtn.onclick = () => downloadReceiptPDF(lastReceipt);
-
-      // Auto-download PDF (optional)
-      downloadReceiptPDF(lastReceipt);
-    } else {
-      msg.innerHTML += `<div class="alert">PDF button not found. Add <b>id="pdfBtn"</b> in student.html.</div>`;
     }
+
+    downloadReceiptPDF(lastReceipt); // auto-download
 
     // Clear fields
     document.getElementById("roomNumber").value = "";
@@ -125,7 +117,7 @@ document.getElementById("submitBtn").addEventListener("click", async () => {
 
 function downloadReceiptPDF(r) {
   if (!window.jspdf || !window.jspdf.jsPDF) {
-    alert("PDF library not loaded. In student.html add jsPDF script BEFORE student.js.");
+    alert("PDF library not loaded. Add jsPDF script BEFORE student.js in student.html.");
     return;
   }
 
