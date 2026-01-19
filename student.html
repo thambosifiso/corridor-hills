@@ -49,7 +49,15 @@
         <textarea id="issue" placeholder="Describe the issue clearly..."></textarea>
       </div>
 
-      <button class="btn primary" id="submitBtn">Submit Issue</button>
+      <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:14px;">
+        <button class="btn primary" id="submitBtn">Submit Issue</button>
+
+        <!-- ✅ PDF button (hidden until successful submit) -->
+        <button class="btn" id="pdfBtn" style="display:none;">Download Proof (PDF)</button>
+
+        <a class="btn ghost" href="./check.html">Check Status</a>
+      </div>
+
       <div id="msg"></div>
 
       <div class="note">
@@ -60,6 +68,8 @@
     <footer class="footer muted">© Corridor Hills</footer>
   </div>
 
+  <!-- ✅ jsPDF must load BEFORE student.js -->
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
   <script src="./assets/js/student.js"></script>
 </body>
 </html>
